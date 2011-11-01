@@ -111,7 +111,7 @@ libpiano.so.0: ${LIBPIANO_RELOBJ} ${LIBPIANO_HDR} ${LIBWAITRESS_RELOBJ} \
 
 %.o: %.c
 	${CC} ${CFLAGS} `pkg-config --cflags --libs glib-2.0` \
-			`pkg-config --cflags --libs gtk+-2.0` 
+			`pkg-config --cflags --libs gtk+-2.0` \
 			-I ${LIBPIANO_INCLUDE} -I ${LIBWAITRESS_INCLUDE} \
 			-I ${LIBEZXML_INCLUDE} ${LIBFAAD_CFLAGS} \
 			${LIBMAD_CFLAGS} -c -o $@ $<

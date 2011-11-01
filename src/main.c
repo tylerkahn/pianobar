@@ -59,6 +59,27 @@ THE SOFTWARE.
 /* notifcation include */
 #include <libnotify/notify.h>
 
+static void SendNotification(BarApp_t *app) {
+	NotifyNotification *songNotification;
+	char coverArtWgetBuffer[512];
+	char coverArtLocation[256];
+	snprintf(coverArtLocation, 256, "/tmp/%llu-coverArt.jpg", (unsigned long long) getpid());
+	snprintf(coverArtWgetBuffer, 512, "wget --quiet -O %s %s", coverArtLocation, app->playlist->coverArt);
+	int result = system(coverArtWgetBuffer);
+	songNotification = notify_notification_new(app->playlist->artist,
+											app->playlist->title,
+											coverArtLocation,
+											NULL); //TODO: get album art
+	notify_notification_set_timeout(songNotification,3000);
+	notify_notification_set_urgency(songNotification,NOTIFY_URGENCY_CRITICAL);
+
+	GError *error = NULL;
+	notify_notification_show(songNotification,&error);
+
+	g_object_unref(G_OBJECT(songNotification));
+	free(error);
+}
+
 /*	copy proxy settings to waitress handle
  */
 static void BarMainLoadProxy (const BarSettings_t *settings,
@@ -192,17 +213,8 @@ static void BarMainStartPlayback (BarApp_t *app, pthread_t *playerThread) {
 	if (app->playlist->audioUrl == NULL) {
 		BarUiMsg (&app->settings, MSG_ERR, "Invalid song url.\n");
 	} else {
-		NotifyNotification *songNotification;
-		songNotification = notify_notification_new(app->playlist->artist,
-												app->playlist->title,
-												NULL,
-												NULL); //TODO: get album art
-		notify_notification_set_timeout(songNotification,3000);
-		notify_notification_set_urgency(songNotification,NOTIFY_URGENCY_CRITICAL);
-		GError *error = NULL;
-		notify_notification_show(songNotification,&error);
 
-		BarUiMsg(&app->settings, MSG_NONE, "Test %s", app->playlist->coverArt);
+		SendNotification(app);
 
 		/* setup player */
 		memset (&app->player, 0, sizeof (app->player));
