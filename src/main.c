@@ -65,10 +65,14 @@ static void SendNotification(BarApp_t *app) {
 	NotifyNotification *songNotification;
 	char coverArtWgetBuffer[512];
 	char coverArtLocation[256];
+	char *coverArtURL;
 	int result;
 
+	// if there is no cover art, download the no album art image
+	coverArtURL = strcmp(app->playlist->coverArt, "") == 0 ? "http://www.pandora.com/images/no_album_art.jpg" : app->playlist->coverArt;
+
 	snprintf(coverArtLocation, 256, "/tmp/%llu-coverArt.jpg", (unsigned long long) getpid());
-	snprintf(coverArtWgetBuffer, 512, "wget --quiet -O %s %s", coverArtLocation, app->playlist->coverArt);
+	snprintf(coverArtWgetBuffer, 512, "wget --quiet -O %s %s", coverArtLocation, coverArtURL);
 	result = system(coverArtWgetBuffer);
 
 	songNotification = notify_notification_new(app->playlist->artist,
