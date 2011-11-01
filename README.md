@@ -18,4 +18,5 @@ Dependencies
 ---------------
 
 Depends on libnotify. On ubuntu you can get this with:
-    sudo aptitude install libnotify-dev
+
+     sudo aptitude install libnotify-dev
