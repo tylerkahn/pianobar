@@ -1,6 +1,8 @@
 /*
 Copyright (c) 2008-2011
 	Lars-Dominik Braun <lars@6xq.net>
+Portions Copyright (c) 2011
+	Tyler Kahn <tkahn6@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -63,15 +65,18 @@ static void SendNotification(BarApp_t *app) {
 	NotifyNotification *songNotification;
 	char coverArtWgetBuffer[512];
 	char coverArtLocation[256];
+	int result;
+
 	snprintf(coverArtLocation, 256, "/tmp/%llu-coverArt.jpg", (unsigned long long) getpid());
 	snprintf(coverArtWgetBuffer, 512, "wget --quiet -O %s %s", coverArtLocation, app->playlist->coverArt);
-	int result = system(coverArtWgetBuffer);
+	result = system(coverArtWgetBuffer);
+
 	songNotification = notify_notification_new(app->playlist->artist,
-											app->playlist->title,
-											coverArtLocation,
-											NULL); //TODO: get album art
-	notify_notification_set_timeout(songNotification,3000);
-	notify_notification_set_urgency(songNotification,NOTIFY_URGENCY_CRITICAL);
+									app->playlist->title,
+									coverArtLocation,
+									NULL);
+	notify_notification_set_timeout(songNotification, 3000);
+	notify_notification_set_urgency(songNotification, NOTIFY_URGENCY_CRITICAL);
 
 	GError *error = NULL;
 	notify_notification_show(songNotification,&error);
