@@ -56,6 +56,9 @@ THE SOFTWARE.
 #include "ui_dispatch.h"
 #include "ui_readline.h"
 
+/* notifcation include */
+#include <libnotify/notify.h>
+
 /*	copy proxy settings to waitress handle
  */
 static void BarMainLoadProxy (const BarSettings_t *settings,
@@ -189,7 +192,18 @@ static void BarMainStartPlayback (BarApp_t *app, pthread_t *playerThread) {
 	if (app->playlist->audioUrl == NULL) {
 		BarUiMsg (&app->settings, MSG_ERR, "Invalid song url.\n");
 	} else {
-		BarUiMsg(&app->settings, MSG_NONE, "Test %s", app->playlist->title);
+		NotifyNotification *songNotification;
+		songNotification = notify_notification_new(app->playlist->artist,
+												app->playlist->title,
+												NULL,
+												NULL); //TODO: get album art
+		notify_notification_set_timeout(songNotification,3000);
+		notify_notification_set_urgency(songNotification,NOTIFY_URGENCY_CRITICAL);
+		GError *error = NULL;
+		notify_notification_show(songNotification,&error);
+
+		BarUiMsg(&app->settings, MSG_NONE, "Test %s", app->playlist->coverArt);
+
 		/* setup player */
 		memset (&app->player, 0, sizeof (app->player));
 
@@ -326,6 +340,10 @@ static void BarMainLoop (BarApp_t *app) {
 }
 
 int main (int argc, char **argv) {
+	/* init gtk for notifications */
+	gtk_init(&argc, &argv);
+	notify_init("pianobar");
+
 	static BarApp_t app;
 	/* terminal attributes _before_ we started messing around with ~ECHO */
 	struct termios termOrig;

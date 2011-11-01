@@ -94,7 +94,7 @@ else
 pianobar: ${PIANOBAR_OBJ} ${PIANOBAR_HDR} ${LIBPIANO_OBJ} ${LIBWAITRESS_OBJ} \
 		${LIBWAITRESS_HDR} ${LIBEZXML_OBJ} ${LIBEZXML_HDR}
 	${CC} ${CFLAGS} ${LDFLAGS} ${PIANOBAR_OBJ} ${LIBPIANO_OBJ} \
-			${LIBWAITRESS_OBJ} ${LIBEZXML_OBJ} -lao -lpthread -lm \
+			${LIBWAITRESS_OBJ} ${LIBEZXML_OBJ} -lao -lpthread -lm -lnotify \
 			${LIBFAAD_LDFLAGS} ${LIBMAD_LDFLAGS} -o $@
 endif
 
@@ -110,7 +110,9 @@ libpiano.so.0: ${LIBPIANO_RELOBJ} ${LIBPIANO_HDR} ${LIBWAITRESS_RELOBJ} \
 	${AR} rcs libpiano.a ${LIBPIANO_OBJ} ${LIBWAITRESS_OBJ} ${LIBEZXML_OBJ}
 
 %.o: %.c
-	${CC} ${CFLAGS} -I ${LIBPIANO_INCLUDE} -I ${LIBWAITRESS_INCLUDE} \
+	${CC} ${CFLAGS} `pkg-config --cflags --libs glib-2.0` \
+			`pkg-config --cflags --libs gtk+-2.0` 
+			-I ${LIBPIANO_INCLUDE} -I ${LIBWAITRESS_INCLUDE} \
 			-I ${LIBEZXML_INCLUDE} ${LIBFAAD_CFLAGS} \
 			${LIBMAD_CFLAGS} -c -o $@ $<
 
