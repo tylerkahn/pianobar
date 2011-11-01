@@ -305,6 +305,7 @@ static void BarMainLoop (BarApp_t *app) {
 				}
 				/* song ready to play */
 				if (app->playlist != NULL) {
+					printf("%s", app->playlist->title);
 					BarMainStartPlayback (app, &playerThread);
 				}
 			}
