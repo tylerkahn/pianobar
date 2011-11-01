@@ -189,6 +189,7 @@ static void BarMainStartPlayback (BarApp_t *app, pthread_t *playerThread) {
 	if (app->playlist->audioUrl == NULL) {
 		BarUiMsg (&app->settings, MSG_ERR, "Invalid song url.\n");
 	} else {
+		BarUiMsg(&app->settings, MSG_NONE, "Test %s", app->playlist->title);
 		/* setup player */
 		memset (&app->player, 0, sizeof (app->player));
 
@@ -305,7 +306,6 @@ static void BarMainLoop (BarApp_t *app) {
 				}
 				/* song ready to play */
 				if (app->playlist != NULL) {
-					printf("%s", app->playlist->title);
 					BarMainStartPlayback (app, &playerThread);
 				}
 			}
