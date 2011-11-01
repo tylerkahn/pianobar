@@ -12,7 +12,7 @@ pianobar is a console client for the personalized web radio pandora
  - proxy support for listeners outside the USA
  - notifications displayed on song change
 
-The sourcecode can be downloaded at http://github.com/tkahn6/pianobar/ or
+The sourcecode can be downloaded at http://github.com/tkahn6/pianobar/
 
 Dependencies
 ---------------
