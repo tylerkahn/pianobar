@@ -61,7 +61,7 @@ THE SOFTWARE.
 /* notifcation include */
 #include <libnotify/notify.h>
 
-static void SendNotification(BarApp_t *app) {
+static void SendNotification(PianoSong_t *song) {
 	NotifyNotification *songNotification;
 	char coverArtWgetBuffer[512];
 	char coverArtLocation[256];
@@ -70,14 +70,14 @@ static void SendNotification(BarApp_t *app) {
 
 	// if there is no cover art, download the no album art image
 	// TODO: cache this image
-	coverArtURL = *app->playlist->coverArt == '\0' ? "http://www.pandora.com/images/no_album_art.jpg" : app->playlist->coverArt;
+	coverArtURL = *song->coverArt == '\0' ? "http://www.pandora.com/images/no_album_art.jpg" : song->coverArt;
 
 	snprintf(coverArtLocation, 256, "/tmp/%llu-coverArt.jpg", (unsigned long long) getpid());
 	snprintf(coverArtWgetBuffer, 512, "wget --quiet -O %s %s", coverArtLocation, coverArtURL);
 	result = system(coverArtWgetBuffer);
 
-	songNotification = notify_notification_new(app->playlist->artist,
-									app->playlist->title,
+	songNotification = notify_notification_new(song->artist,
+									song->title,
 									coverArtLocation,
 									NULL);
 	notify_notification_set_timeout(songNotification, 3000);
@@ -223,8 +223,8 @@ static void BarMainStartPlayback (BarApp_t *app, pthread_t *playerThread) {
 	if (app->playlist->audioUrl == NULL) {
 		BarUiMsg (&app->settings, MSG_ERR, "Invalid song url.\n");
 	} else {
-
-		SendNotification(app);
+		pthread_t notify_thread;
+		pthread_create(&notify_thread, NULL, (void*)SendNotification, app->playlist);
 
 		/* setup player */
 		memset (&app->player, 0, sizeof (app->player));
