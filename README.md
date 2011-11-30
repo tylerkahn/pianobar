@@ -1,7 +1,7 @@
 pianobar (now with notifications)
 ===========
 
-**Works as of November, 29, 2011** (synced with master for API changes)
+**Works as of November 29, 2011** (synced with master for API changes)
 
 pianobar is a console client for the personalized web radio pandora
 (http://www.pandora.com).
